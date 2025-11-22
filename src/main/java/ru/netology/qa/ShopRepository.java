@@ -13,6 +13,9 @@ public class ShopRepository {
     }
 
     public void add(Product product) {
+        if (findById(product.getId()) != null) {
+            throw new AlreadyExistsException("Element with id: " + product.getId() + " already exists");
+        }
         products = addToArray(products, product);
     }
 
@@ -20,7 +23,6 @@ public class ShopRepository {
         return products;
     }
 
-    // Новый метод для поиска товара по ID
     public Product findById(int id) {
         for (Product product : products) {
             if (product.getId() == id) {
@@ -30,12 +32,10 @@ public class ShopRepository {
         return null;
     }
 
-    // Обновлённый метод удаления с проверкой существования
-    public void removeById(int id) {
+    public void remove(int id) {
         if (findById(id) == null) {
             throw new NotFoundException("Element with id: " + id + " not found");
         }
-
         Product[] tmp = new Product[products.length - 1];
         int copyToIndex = 0;
         for (Product product : products) {
@@ -45,12 +45,5 @@ public class ShopRepository {
             }
         }
         products = tmp;
-    }
-
-    // Старый метод remove(int id) можно оставить для совместимости,
-    // но лучше использовать removeById
-    @Deprecated
-    public void remove(int id) {
-        removeById(id);
     }
 }
